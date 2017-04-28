@@ -1,5 +1,5 @@
 {
-  "name": "@gynunu/ionic-cache",
+  "name": "@gyunu/ionic-cache",
   "version": "0.0.1",
   "description": "A cache and api module for Ionic 3 and Angular 4 ",
   "main": "index.js",
