@@ -1,7 +1,7 @@
 {
-  "name": "@gyunu/ionic-cache",
+  "name": "@gyunu/ng-cache",
   "version": "0.0.1",
-  "description": "A cache and api module for Ionic 3 and Angular 4 ",
+  "description": "A cache and api module for Angular 4 ",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
