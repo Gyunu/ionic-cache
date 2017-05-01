@@ -1,19 +1,30 @@
 {
-  "name": "@gyunu/ionic-cache",
+  "name": "@gyunu/ng-cache",
   "version": "0.0.1",
-  "description": "A cache and api module for Ionic 3 and Angular 4 ",
-  "main": "index.js",
+  "description": "A cache and api module for Angular 4 ",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "transpile": "ngc",
+    "package": "rollup -c",
+    "minify": "uglifyjs dist/bundles/ng-cache.umd.js --screw-ie8 --compress --mangle --comments --output dist/bundles/ng-cache.umd.min.js",
+    "build": "npm run transpile && npm run package && npm run minify"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Gyunu/ionic-cache.git"
+    "url": "git+https://github.com/Gyunu/ng-cache.git"
   },
   "author": "Dave Allen",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Gyunu/ionic-cache/issues"
+    "url": "https://github.com/Gyunu/ng-cache/issues"
   },
-  "homepage": "https://github.com/Gyunu/ionic-cache#readme"
+  "homepage": "https://github.com/Gyunu/ng-cache#readme",
+  "devDependencies": {
+    "@angular/compiler": "^4.1.0",
+    "@angular/compiler-cli": "^4.1.0",
+    "rollup": "^0.41.6",
+    "typescript": "^2.3.1",
+    "uglify-js": "^2.8.22"
+  },
+  "dependencies": {}
 }
