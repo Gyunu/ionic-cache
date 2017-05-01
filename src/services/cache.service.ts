@@ -3,18 +3,26 @@ import { Observable } from 'rxjs/Rx';
 
 
 import { CacheConfig, CONFIG } from '../contracts/config.contract';
-import { DISKSTORAGE } from '../contracts/diskStorage.contract';
-import { SESSIONSTORAGE } from '../contracts/sessionStorage.contract';
+import { Storage } from '../contracts/storage.contract';
 
 @Injectable()
 export class CacheService {
 
+  private diskStorage: Storage;
+  private sessionStorage: Storage;
+
   constructor(
-    @Inject(CONFIG) private config: CacheConfig,
-    @Inject(DISKSTORAGE) private diskStorage,
-    @Inject(SESSIONSTORAGE) private sessionStorage,
+    @Inject(CONFIG) private config: CacheConfig
   ) {
 
+  }
+
+  public setDiskStorage(storage: Storage) {
+    this.diskStorage = storage;
+  }
+
+  public setSessionStorage(storage: Storage) {
+    this.sessionStorage = storage;
   }
 
   public getItem(key: string): Observable<any> {
@@ -23,11 +31,19 @@ export class CacheService {
         let data: any;
 
         if(this.config.useSessionStorage) {
-          data = this.sessionStorage.setItem(key, data);
+          this.sessionStorage.getItem(key)
+          .then(
+            (success) => observer.next(data),
+            (error) => observer.error(error)
+          );
         }
 
         if(!data) {
-          data = this.diskStorage.setItem(key, data);
+          data = this.diskStorage.getItem(key)
+          .then(
+            (success) => observer.next(data),
+            (error) => observer.error(error)
+          );
         }
 
         if(this.isExpired(data.expires)) {
@@ -36,9 +52,6 @@ export class CacheService {
         else {
           observer.next(data);
         }
-
-
-        observer.complete();
     });
   }
 
@@ -49,12 +62,18 @@ export class CacheService {
     return Observable.create(
       (observer) => {
         if(this.config.useSessionStorage) {
-          this.sessionStorage.setItem(key, data);
+          this.sessionStorage.setItem(key, data)
+          .then(
+            (success) => observer.next(data),
+            (error) => observer.error(error)
+          );;
         }
 
-        this.diskStorage.setItem(key, data);
-        observer.next(true);
-        observer.complete();
+        this.diskStorage.setItem(key, data)
+        .then(
+          (success) => observer.next(data),
+          (error) => observer.error(error)
+        );
     });
   }
 
@@ -62,12 +81,18 @@ export class CacheService {
     return Observable.create(
       (observer) => {
         if(this.config.useSessionStorage) {
-          this.sessionStorage.removeItem(key);
+          this.sessionStorage.removeItem(key)
+          .then(
+            (success) => observer.next(true),
+            (error) => observer.error(error)
+          );;
         }
 
-        this.diskStorage.removeItem(key);
-        observer.next(true);
-        observer.complete();
+        this.diskStorage.removeItem(key)
+        .then(
+          (success) => observer.next(true),
+          (error) => observer.error(error)
+        );
     });
   }
 
@@ -75,12 +100,19 @@ export class CacheService {
     return Observable.create(
       (observer) => {
         if(this.config.useSessionStorage) {
-          this.sessionStorage.empty();
+          this.sessionStorage.clear()
+          .then(
+            (success) => observer.next(true),
+            (error) => observer.error(error)
+          );
         }
 
-        this.diskStorage.empty();
-        observer.next(true);
-        observer.complete();
+        this.diskStorage.clear();
+        observer.next(true)
+        .then(
+          (success) => observer.next(true),
+          (error) => observer.error(error)
+        );
     });
   }
 

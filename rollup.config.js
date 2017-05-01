@@ -1,6 +1,6 @@
 export default {
-  entry: 'dist/index.js',
-  dest: 'dist/bundles/ng-cache.umd.js',
+  entry: 'index.js',
+  dest: 'bundles/ng-cache.umd.js',
   sourceMap: false,
   format: 'umd',
   moduleName: 'gyunu.ng-cache',

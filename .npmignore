@@ -5,7 +5,5 @@ npm-debug.log
 Thumbs.db
 .DS_Store
 # Ignored files
-*.js
-*.map
-*.d.ts
-*.module.ngfactory
+*.ts
+!*.d.ts

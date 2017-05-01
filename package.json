@@ -2,11 +2,11 @@
   "name": "@gyunu/ng-cache",
   "version": "0.0.1",
   "description": "A cache and api module for Angular 4 ",
-  "main": "dist/index.js",
+  "main": "index.js",
   "scripts": {
     "transpile": "ngc",
     "package": "rollup -c",
-    "minify": "uglifyjs dist/bundles/ng-cache.umd.js --screw-ie8 --compress --mangle --comments --output dist/bundles/ng-cache.umd.min.js",
+    "minify": "uglifyjs bundles/ng-cache.umd.js --screw-ie8 --compress --mangle --comments --output bundles/ng-cache.umd.min.js",
     "build": "npm run transpile && npm run package && npm run minify"
   },
   "repository": {
@@ -26,5 +26,6 @@
     "typescript": "^2.3.1",
     "uglify-js": "^2.8.22"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "typings": "ng-cache.d.ts"
 }

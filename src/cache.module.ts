@@ -14,8 +14,6 @@ import { CacheService } from './services/cache.service';
   Contracts
 */
 import { CacheConfig, CONFIG } from './contracts/config.contract';
-import { DISKSTORAGE } from './contracts/diskStorage.contract';
-import { SESSIONSTORAGE } from './contracts/sessionStorage.contract';
 import { Storage } from './contracts/storage.contract';
 
 @NgModule({
@@ -29,21 +27,13 @@ import { Storage } from './contracts/storage.contract';
 export class CacheModule {
 
   static forRoot(
-    config: CacheConfig,
-    diskStorage: Storage,
-    sessionStorage: Storage
+    config: CacheConfig
   ): ModuleWithProviders {
-
-    if(config.useSessionStorage && !sessionStorage) {
-      sessionStorage = new SessionStorage();
-    }
 
     return {
       ngModule: CacheModule,
       providers: [
         {provide: CONFIG, useValue: config},
-        {provide: DISKSTORAGE, useValue: diskStorage},
-        {provide: SESSIONSTORAGE, useValue: sessionStorage},
         {provide: CacheService, useClass: CacheService}
       ]
     }
