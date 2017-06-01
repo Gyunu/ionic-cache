@@ -9,3 +9,4 @@ Thumbs.db
 *.map
 *.d.ts
 *.module.ngfactory
+*.ngsummary

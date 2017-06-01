@@ -28,50 +28,81 @@ export class CacheService {
   public getItem(key: string): Observable<any> {
     return Observable.create(
       (observer) => {
-        let data: any;
-
         if(this.config.useSessionStorage) {
           this.sessionStorage.getItem(key)
           .then(
-            (success) => observer.next(data),
-            (error) => observer.error(error)
-          );
+            (success) => {
+              if(success) {
+                if(this.isExpired(success.expires)) {
+                  this.sessionStorage.removeItem(key)
+                  .then(
+                    (success) => {
+                      observer.next(null);
+                      observer.complete;
+                    },
+                    (error) => {
+                      observer.error(error);
+                    }
+                  )
+                }
+                else {
+                  observer.next(success.data);
+                  observer.complete();
+                }
+              }
+              else {
+                this.diskStorage.getItem(key)
+                .then(
+                  (success) => {
+                    if(success) {
+                      if(this.isExpired(success.expires)) {
+                        this.diskStorage.removeItem(key)
+                        .then(
+                          (success) => {
+                            observer.next(null);
+                            observer.complete();
+                          },
+                          (error) => {
+                            observer.error(error);
+                          }
+                        );
+                      }
+                      else {
+                        observer.next(success.data);
+                        observer.complete();
+                      }
+                    }
+                  },
+                  (error) => {
+                    observer.error();
+                  }
+                )
+              }
+          });
         }
-
-        if(!data) {
-          data = this.diskStorage.getItem(key)
-          .then(
-            (success) => observer.next(data),
-            (error) => observer.error(error)
-          );
-        }
-
-        if(this.isExpired(data.expires)) {
-          this.removeItem(key);
-        }
-        else {
-          observer.next(data);
-        }
-    });
+      });
   }
 
   public setItem(key: string, data: any): Observable<any> {
 
-    data.expires = Date.now() + (this.config.expires / 60 / 1000);
+    const now = Date.now();
+    const cacheTime = (this.config.expires * 60 * 1000);
+    let saveData: any = {};
+    saveData.expires = now + cacheTime;
+    saveData.data = data;
 
     return Observable.create(
       (observer) => {
         if(this.config.useSessionStorage) {
-          this.sessionStorage.setItem(key, data)
+          this.sessionStorage.setItem(key, saveData)
           .then(
-            (success) => observer.next(data),
-            (error) => observer.error(error)
-          );;
+            (success) => {},
+            (error) => {}
+          );
         }
-
-        this.diskStorage.setItem(key, data)
+        this.diskStorage.setItem(key, saveData)
         .then(
-          (success) => observer.next(data),
+          (success) => observer.next(saveData),
           (error) => observer.error(error)
         );
     });
@@ -117,6 +148,6 @@ export class CacheService {
   }
 
   private isExpired(expiry: string): boolean {
-    return new Date(expiry).getMilliseconds() < Date.now();
+    return Number(expiry) < Date.now();
   }
 }

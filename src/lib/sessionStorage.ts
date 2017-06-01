@@ -1,31 +1,33 @@
 export class SessionStorage {
 
-  private storage: any = {};
+  constructor(
+    private storage: any = {}
+  ) {}
 
-  constructor() {}
-
-  get length(): number {
-    return Object.keys(this.storage).length;
+  public getItem(key: string): Promise<any> {
+    return new Promise((res, rej) => {
+      res(this.storage[key]);
+    });
   }
 
-  public getItem(key: string): any {
-    return this.storage[key];
+  public setItem(key: string, data: any): Promise<boolean> {
+    return new Promise((res, rej) => {
+      this.storage[key] = data;
+      res(true);
+    });
   }
 
-  public setItem(key: string, data: any): void {
-    this.storage[key] = data;
+  public removeItem(key: string): Promise<boolean> {
+    return new Promise((res, rej) => {
+      this.storage[key] = null;
+      res(true);
+    });
   }
 
-  public removeItem(key: string): void {
-    this.storage[key] = null;
+  public clear(): Promise<boolean> {
+    return new Promise((res, rej) => {
+      this.storage = {};
+      res(true);
+    });
   }
-
-  public clear(): void {
-    this.storage = {};
-  }
-
-  public key(key: number): any {
-    return this.storage[Object.keys(this.storage)[key]];
-  }
-
 }
